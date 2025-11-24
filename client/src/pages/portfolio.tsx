@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
-import { Mail, Linkedin, Github, Twitter, ExternalLink } from "lucide-react";
+import { Mail, Linkedin, Github, Twitter, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { ContactForm } from "@/components/contact-form";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("home");
+  
+  const aboutAnimation = useScrollAnimation();
+  const projectsAnimation = useScrollAnimation();
+  const testimonialsAnimation = useScrollAnimation();
+  const contactAnimation = useScrollAnimation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,6 +92,7 @@ export default function Portfolio() {
                 {item.label}
               </a>
             ))}
+            <ThemeToggle />
           </div>
         </nav>
       </header>
@@ -133,7 +142,10 @@ export default function Portfolio() {
 
         {/* About Section */}
         <section id="about" className="border-t bg-muted/30 px-6 py-16 md:py-24">
-          <div className="mx-auto w-full max-w-3xl">
+          <div 
+            ref={aboutAnimation.ref}
+            className={`mx-auto w-full max-w-3xl fade-in-section ${aboutAnimation.isVisible ? 'is-visible' : ''}`}
+          >
             <h2 className="text-center text-3xl font-semibold tracking-tight text-foreground md:text-4xl" data-testid="heading-about">
               About Me
             </h2>
@@ -195,13 +207,26 @@ export default function Portfolio() {
                   ))}
                 </div>
               </div>
+
+              {/* CUSTOMIZE: Replace sample-resume.pdf with your actual resume file */}
+              <div className="mt-12 flex justify-center">
+                <Button size="lg" className="gap-2" asChild data-testid="button-download-resume">
+                  <a href="/resume/sample-resume.pdf" download="Your-Name-Resume.pdf">
+                    <Download className="h-5 w-5" />
+                    Download Resume
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Projects Section */}
         <section id="projects" className="border-t px-6 py-16 md:py-24">
-          <div className="mx-auto w-full max-w-4xl">
+          <div 
+            ref={projectsAnimation.ref}
+            className={`mx-auto w-full max-w-4xl fade-in-section ${projectsAnimation.isVisible ? 'is-visible' : ''}`}
+          >
             <h2 className="text-center text-3xl font-semibold tracking-tight text-foreground md:text-4xl" data-testid="heading-projects">
               Featured Projects
             </h2>
@@ -276,23 +301,114 @@ export default function Portfolio() {
           </div>
         </section>
 
+        {/* Testimonials Section */}
+        <section id="testimonials" className="border-t px-6 py-16 md:py-24">
+          <div 
+            ref={testimonialsAnimation.ref}
+            className={`mx-auto w-full max-w-4xl fade-in-section ${testimonialsAnimation.isVisible ? 'is-visible' : ''}`}
+          >
+            <h2 className="text-center text-3xl font-semibold tracking-tight text-foreground md:text-4xl" data-testid="heading-testimonials">
+              What People Say
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-muted-foreground md:text-lg">
+              Kind words from colleagues, clients, and collaborators
+            </p>
+
+            <div className="mt-12 space-y-8">
+              {/* CUSTOMIZE: Replace with your actual testimonials */}
+              {[
+                {
+                  id: 1,
+                  quote:
+                    "An exceptional professional who consistently delivers outstanding results. Their attention to detail and creative approach made our project a huge success.",
+                  author: "Jane Smith",
+                  role: "CEO, Tech Company",
+                  avatar: "",
+                },
+                {
+                  id: 2,
+                  quote:
+                    "Working with them was an absolute pleasure. Their expertise and collaborative spirit helped us achieve goals we didn't think were possible.",
+                  author: "John Doe",
+                  role: "Product Manager, Startup Inc",
+                  avatar: "",
+                },
+                {
+                  id: 3,
+                  quote:
+                    "A true professional with remarkable skills. They bring both technical excellence and strategic thinking to every challenge.",
+                  author: "Sarah Johnson",
+                  role: "Director of Operations, Enterprise Co",
+                  avatar: "",
+                },
+              ].map((testimonial) => (
+                <Card key={testimonial.id} className="p-6" data-testid={`card-testimonial-${testimonial.id}`}>
+                  <div className="flex flex-col gap-6 md:flex-row md:items-start">
+                    <Avatar className="h-16 w-16 flex-shrink-0" data-testid={`avatar-testimonial-${testimonial.id}`}>
+                      <AvatarImage src={testimonial.avatar} alt={testimonial.author} />
+                      <AvatarFallback className="text-lg font-semibold">
+                        {testimonial.author
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1">
+                      <p className="text-lg leading-relaxed text-foreground" data-testid={`text-testimonial-quote-${testimonial.id}`}>
+                        "{testimonial.quote}"
+                      </p>
+
+                      <div className="mt-4">
+                        <p className="font-semibold text-foreground" data-testid={`text-testimonial-author-${testimonial.id}`}>
+                          {testimonial.author}
+                        </p>
+                        <p className="text-sm text-muted-foreground" data-testid={`text-testimonial-role-${testimonial.id}`}>
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Contact Section */}
         <section id="contact" className="border-t bg-muted/30 px-6 py-16 md:py-24">
-          <div className="mx-auto w-full max-w-2xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl" data-testid="heading-contact">
+          <div 
+            ref={contactAnimation.ref}
+            className={`mx-auto w-full max-w-2xl fade-in-section ${contactAnimation.isVisible ? 'is-visible' : ''}`}
+          >
+            <h2 className="text-center text-3xl font-semibold tracking-tight text-foreground md:text-4xl" data-testid="heading-contact">
               Let's Connect
             </h2>
 
             {/* CUSTOMIZE: Replace with your message */}
-            <p className="mt-6 text-base leading-relaxed text-foreground md:text-lg" data-testid="text-contact-intro">
+            <p className="mt-6 text-center text-base leading-relaxed text-foreground md:text-lg" data-testid="text-contact-intro">
               I'm always interested in hearing about new opportunities, collaborations, 
               or just having a conversation. Feel free to reach out!
             </p>
 
-            {/* CUSTOMIZE: Replace with your email address */}
+            {/* Contact Form */}
             <div className="mt-12">
+              <ContactForm />
+            </div>
+
+            <div className="my-12 flex items-center gap-4">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-sm text-muted-foreground">OR</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            {/* CUSTOMIZE: Replace with your email address */}
+            <div className="text-center">
+              <p className="mb-4 text-sm text-muted-foreground">Email me directly at</p>
               <Button
                 size="lg"
+                variant="outline"
                 className="gap-2 text-lg"
                 asChild
                 data-testid="button-email"
@@ -305,7 +421,7 @@ export default function Portfolio() {
             </div>
 
             {/* CUSTOMIZE: Update with your social media profiles */}
-            <div className="mt-12">
+            <div className="mt-12 text-center">
               <p className="mb-6 text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 Connect With Me
               </p>

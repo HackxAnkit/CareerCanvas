@@ -49,6 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         success: true, 
         message: "Message received successfully" 
+        console.log("Contact form submission processed successfully")
       });
     } catch (error) {
       console.error("Contact form error:", error);
